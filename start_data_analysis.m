@@ -1,12 +1,12 @@
 
 
 
-function data = start_data_analysis 
+function new_data = start_data_analysis 
 
 % prompt users to input the pixel size.  
 pixel_size = str2num(input('What is the pixel size (nm/pixel):', 's'));
 
-
+pearl_tf = ismember(char('y'),char(input('Is this for axon pearls? (yes/no):', 's')));
 
 % Choosing a directory using a dialog box
 disp ('choose the directory where the text files are located');
@@ -14,7 +14,7 @@ directory_name = uigetdir('/Users/watanabe_lab/Dropbox (Watanabe_lab)/Watanabe_l
 %change the path inside the () to set the initial directory. 
 
 % Choosing the data files using a dialog box
-fprintf ('select all data files');
+fprintf ('select all data files\n');
 [filename] = uigetfile(('*.txt'), 'MultiSelect', 'on',...
                         'Select all data files\n', directory_name);
 
@@ -52,96 +52,119 @@ else %if multiple files are selected
     end
 end
 
-a=1;
-b=1;
-c=1;
-d=1;
-e=1;
+% disp (file_name)
 
-% string_tf=0;
-% mito_tf=0;
-% bouton_tf=0;
-
-for i=1:length(data)
+if pearl_tf ==1
     
-    for j= 1:length(data(i).analysis_data)
+    a=1;
+    b=1;
+    c=1;
+    d=1;
+    e=1;
+    
+    % string_tf=0;
+    % mito_tf=0;
+    % bouton_tf=0;
+    
+    for i=1:length(data)
         
-        if isfield(data(i).analysis_data(j), 'string')
+        for j= 1:length(data(i).analysis_data)
             
-            string_tf =1;
-        
-            for k= 1:length(data(i).analysis_data(j).string.length)
+            if isfield(data(i).analysis_data(j), 'string')
                 
-                new_data.string.length(a,1) = data(i).analysis_data(j).string.length(k);
+                string_tf =1;
                 
-                a=a+1;
+                for k= 1:length(data(i).analysis_data(j).string.length)
+                    
+                    new_data.string.length(a,1) = data(i).analysis_data(j).string.length(k);
+                    
+                    a=a+1;
+                    
+                end
+disp (filename(i));
+                for k= 1:length(data(i).analysis_data(j).string.width)
+                    
+                    new_data.string.width(b,1) = data(i).analysis_data(j).string.width(k);
+                    
+                    b=b+1;
+                    
+                end
+            end
+            
+            
+            
+            if isfield(data(i).analysis_data(j), 'bouton')
+                
+                bouton_tf = 1;
+                
+                for k= 1:length(data(i).analysis_data(j).bouton.length)
+                    
+                    new_data.bouton.length(c,1) = data(i).analysis_data(j).bouton.length(k);
+                    
+                    c=c+1;
+                    
+                end
+                
+                for k= 1:length(data(i).analysis_data(j).bouton.width)
+                    
+                    new_data.bouton.width(d,1) = data(i).analysis_data(j).bouton.width(k);
+                    
+                    d=d+1;
+                    
+                end
+            end
+            
+            if isfield(data(i).analysis_data(j), 'mito')
+                
+                mito_tf=1;
+                
+                for k= 1:length(data(i).analysis_data(j).mito)
+                    
+                    new_data.mito.area(e,1) = data(i).analysis_data(j).mito(k).area;
+                    new_data.mito.ar(e,1) = data(i).analysis_data(j).mito(k).ar;
+                    new_data.mito.round(e,1) = data(i).analysis_data(j).mito(k).round;
+                    new_data.mito.solidity(e,1)=data(i).analysis_data(j).mito(k).solidity;
+                    e=e+1;
+                    
+                end
                 
             end
             
-            for k= 1:length(data(i).analysis_data(j).string.width)
-                
-                new_data.string.width(b,1) = data(i).analysis_data(j).string.width(k);
-                
-                b=b+1;
-                
-            end
-        end
-        
-        if isfield(data(i).analysis_data(j), 'bouton')
             
-            bouton_tf = 1;
-        
-            for k= 1:length(data(i).analysis_data(j).bouton.length)
-                
-                new_data.bouton.length(c,1) = data(i).analysis_data(j).bouton.length(k);
-                
-                c=c+1;
-                
-            end
-            
-            for k= 1:length(data(i).analysis_data(j).bouton.width)
-                
-                new_data.bouton.width(d,1) = data(i).analysis_data(j).bouton.width(k);
-                
-                d=d+1;
-                
-            end
-        end
-        
-        if isfield(data(i).analysis_data(j), 'mito')
-            
-            mito_tf=1;
-        
-            for k= 1:length(data(i).analysis_data(j).mito)
-                
-                new_data.mito.area(e,1) = data(i).analysis_data(j).mito(k).area;
-                new_data.mito.ar(e,1) = data(i).analysis_data(j).mito(k).ar;
-                new_data.mito.round(e,1) = data(i).analysis_data(j).mito(k).round;
-                new_data.mito.solidity(e,1)=data(i).analysis_data(j).mito(k).solidity;
-                e=e+1;
-                
-            end
             
         end
     end
+    
+    % if string_tf ==1
+    %
+    %     data = struct('strings', {string});
+    % end
+    %
+    %
+    % if bouton_tf ==1
+    %
+    %      data = struct('pearls', {bouton});
+    %
+    % end
+    %
+    % if mito_tf ==1
+    %
+    %      data = struct('mito',{mito});
+    %
+    % end
+
+
 end
 
-% if string_tf ==1
-%     
-%     data = struct('strings', {string});
-% end
-% 
-% 
-% if bouton_tf ==1
-%     
-%      data = struct('pearls', {bouton});
-%      
-% end
-% 
-% if mito_tf ==1
-% 
-%      data = struct('mito',{mito});
-%           
-% end
+if pearl_tf ==0
+    new_data.table = count_data(data);
+    
+    
+    new_data.input = struct ('data', {data});
+    new_data.area = size_me(new_data);
+    new_data.distance = where_are_you(new_data, pixel_size);
 end
+
+end
+
 
